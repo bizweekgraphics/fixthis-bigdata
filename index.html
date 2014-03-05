@@ -19,6 +19,7 @@ body {
 
 .dot {
   stroke: none;
+  stroke-width: 2;
 }
 
 .dot:hover {
@@ -62,7 +63,9 @@ var yValue = function(d) { return d.dimension;}, // data -> value
 
 // setup fill color
 var cValue = function(d) { return d.year;},
-    color = d3.scale.category10();
+    color = d3.scale.log()
+      .domain([1582,1980,2014])
+      .range(["#eee","#999","#111"]);
 
 // add the graph canvas to the body of the webpage
 var svg = d3.select("body").append("svg")
@@ -84,6 +87,8 @@ d3.csv("datadata.csv", function(error, data) {
     d.dimension = +d.dimension;
     d.n = +d.n;
     d.year = +d.year;
+    d.year2 = +d.year2;
+    d.featured = +d.featured;
   });
 
   // don't want dots overlapping axis, so add in buffer to data domain
@@ -119,10 +124,11 @@ d3.csv("datadata.csv", function(error, data) {
       .data(data)
     .enter().append("circle")
       .attr("class", "dot")
-      .attr("r", 5)
+      .attr("r", function(d) {return d.featured ? 7 : 3; })
       .attr("cx", xMap)
       .attr("cy", yMap)
       .style("fill", function(d) { return color(cValue(d));})
+      .style("stroke", function(d) { return d.featured ? "#f0f" : "none"})
       .on("mouseover", function(d) {
           tooltip.style("opacity", .9);
           tooltip.html(d.name + "<br/> (" + xValue(d)
