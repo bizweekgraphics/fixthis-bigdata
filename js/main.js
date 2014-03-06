@@ -1,7 +1,7 @@
 // Example based on http://bl.ocks.org/mbostock/3887118
 // Tooltip example from http://www.d3noob.org/2013/01/adding-tooltips-to-d3js-graph.html
 
-var margin = {top: 20, right: 20, bottom: 60, left: 60},
+var margin = {top: 50, right: 20, bottom: 60, left: 60},
     width = 970 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
@@ -62,28 +62,41 @@ d3.csv("datadata.csv", function(error, data) {
   yScale.domain([d3.min(data, yValue), d3.max(data, yValue)]);
 
   // x-axis
-  svg.append("g")
+  xLabelG = svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
-      .call(xAxis)
-    .append("text")
+      .call(xAxis);
+  xLabelG.append("text")
       .attr("class", "label")
       .attr("x", width)
-      .attr("y", -6)
+      .attr("y", 24)
       .style("text-anchor", "end")
       .text("Sample size");
+  xLabelG.append("text")
+      .attr("class", "label")
+      .attr("x", width)
+      .attr("y", 24)
+      .style("text-anchor", "end")
+      .text("(one fact about however many things)")
 
   // y-axis
-  svg.append("g")
+  yLabelG = svg.append("g")
       .attr("class", "y axis")
-      .call(yAxis)
-    .append("text")
+      .call(yAxis);
+  yLabelG.append("text")
       .attr("class", "label")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
+      .attr("x", -margin.left)
+      .attr("y", -margin.top+1)
       .attr("dy", ".71em")
-      .style("text-anchor", "end")
+      .style("text-anchor", "beginning")
       .text("Dimension");
+  yLabelG.append("text")
+      .attr("class", "label")
+      .attr("x", -margin.left)
+      .attr("y", -margin.top+15)
+      .attr("dy", ".71em")
+      .style("text-anchor", "beginning")
+      .text("(however many facts about one thing)")
 
   // draw dots
   svg.selectAll(".dot")
@@ -99,7 +112,8 @@ d3.csv("datadata.csv", function(error, data) {
           tooltip.style("opacity", 1)
                  .style("left", (d3.event.pageX + 5) + "px")
                  .style("top", (d3.event.pageY - 28) + "px");
-          tooltipFieldsDOM.map(function(dField) { dField.text(d[dField.attr("id")]); })
+          tooltipFieldsDOM.map(function(dField) { dField.text(d[dField.attr("id")]); });
+          drawArrow(d3.select("#svg-canvas"), [width+margin.left+margin.right,0], [d3.event.pageX,d3.event.pageY], 90, false);
       })
       .on("mouseout", function(d) {
           tooltip.style("opacity", 0);

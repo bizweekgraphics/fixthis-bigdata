@@ -212,6 +212,7 @@ body {
   width: 200px;
   height: 28px;
   pointer-events: none;
+  background: white;
 }
 
 .tooltip #name {
