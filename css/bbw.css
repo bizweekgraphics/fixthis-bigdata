@@ -213,3 +213,18 @@ body {
   height: 28px;
   pointer-events: none;
 }
+
+.tooltip #name {
+  font-family: BWHaasHead;
+  display: inline;
+}
+
+.tooltip #year {
+  display: inline;
+}
+.tooltip #year:before {
+  content: " (";
+}
+.tooltip #year:after {
+  content: ")";
+}

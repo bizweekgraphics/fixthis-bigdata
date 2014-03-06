@@ -16,13 +16,13 @@ var margin = {top: 20, right: 20, bottom: 60, left: 60},
 var xValue = function(d) { return d.n;}, // data -> value
     xScale = d3.scale.log().range([0, width]), // value -> display
     xMap = function(d) { return xScale(xValue(d));}, // data -> display
-    xAxis = d3.svg.axis().scale(xScale).orient("bottom");
+    xAxis = d3.svg.axis().scale(xScale).orient("bottom").tickFormat(bbwNumberFormatLog);
 
 // setup y
 var yValue = function(d) { return d.dimension;}, // data -> value
     yScale = d3.scale.log().range([height, 0]), // value -> display
     yMap = function(d) { return yScale(yValue(d));}, // data -> display
-    yAxis = d3.svg.axis().scale(yScale).orient("left");
+    yAxis = d3.svg.axis().scale(yScale).orient("left").tickFormat(bbwNumberFormatLog);
 
 // setup fill color
 var cValue = function(d) { return d.year;},
@@ -41,6 +41,9 @@ var svg = d3.select("#svg-canvas")
 var tooltip = d3.select("body").append("div")
     .attr("class", "tooltip")
     .style("opacity", 0);
+
+var tooltipFields = ["name", "year", "description", "n", "dimension", "url"];
+var tooltipFieldsDOM = tooltipFields.map(function(d) { return tooltip.append("div").attr("id",d)});
 
 // load data
 d3.csv("datadata.csv", function(error, data) {
@@ -87,20 +90,22 @@ d3.csv("datadata.csv", function(error, data) {
       .data(data)
     .enter().append("circle")
       .attr("class", "dot")
-      .attr("r", function(d) {return d.featured ? 7 : 3; })
+      .attr("r", function(d) {return d.featured ? 7 : 2; })
       .attr("cx", xMap)
       .attr("cy", yMap)
-      .style("fill", function(d) { return color(cValue(d));})
-      .style("stroke", function(d) { return d.featured ? "#f0f" : "none"})
+      .style("fill", function(d) { return d.featured ? "#f0f" : "#666";})
+      .style("stroke", function(d) { return d.featured ? "none" : "none"})
       .on("mouseover", function(d) {
-          tooltip.style("opacity", .9);
-          tooltip.html(d.name + "<br/> (" + xValue(d)
-          + ", " + yValue(d) + ")")
-               .style("left", (d3.event.pageX + 5) + "px")
-               .style("top", (d3.event.pageY - 28) + "px");
+          tooltip.style("opacity", 1)
+                 .style("left", (d3.event.pageX + 5) + "px")
+                 .style("top", (d3.event.pageY - 28) + "px");
+          tooltipFieldsDOM.map(function(dField) { dField.text(d[dField.attr("id")]); })
       })
       .on("mouseout", function(d) {
           tooltip.style("opacity", 0);
+      })
+      .on("click", function(d) {
+        window.open(d.url, '_blank');
       });
 
 /*
@@ -133,11 +138,12 @@ d3.csv("datadata.csv", function(error, data) {
 //////////////////////////////////////////////////////////////////////////////////////////
 
 // draw sample arrow from page element to cursor
+/*
 var mouseArrow = drawArrow(d3.select("#svg-canvas"), d3.select("circle"), [300,300], 120, true);
 $(document).on("mousemove", function(e) {
   mouseArrow.remove();
   mouseArrow = drawArrow(d3.select("#svg-canvas"), d3.select("circle"), [e.pageX,e.pageY], 120, true);
-});
+});*/
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // TEMPLATE FUNCTIONS ////////////////////////////////////////////////////////////////////
@@ -285,6 +291,11 @@ function distance(from, to) {
 //////////////////////////////////////////////////////////////////////////////////////////
 // NUMBER FORMATTING /////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
+
+// only return powers of 10; return blanks for anything else. (for log axis tikcs.)
+function bbwNumberFormatLog(dolla) {
+    return (Math.round((Math.log(dolla) / Math.LN10) * 100) / 100) % 1 == 0 ? bbwNumberFormat(dolla) : "";
+}
 
 // adapted from d3.formatPrefix
 function bbwNumberFormat(dolla) {
