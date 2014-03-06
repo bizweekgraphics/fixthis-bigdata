@@ -20,6 +20,7 @@ body.full {
 
 body.wide {
   width: 970px;
+  position: relative;
 }
 
 a {
@@ -182,6 +183,7 @@ path.arrow, polyline.arrow {
   fill: none;
   stroke: black;
   stroke-width: 1;
+  pointer-events: none;
 }
 
 /* FIX THIS BIG DATA */
@@ -209,23 +211,12 @@ body {
 
 .tooltip {
   position: absolute;
-  width: 200px;
-  height: 28px;
+  top: 20px;
+  right: 0;
+  width: 250px;
   pointer-events: none;
-  background: white;
 }
 
 .tooltip #name {
   font-family: BWHaasHead;
-  display: inline;
-}
-
-.tooltip #year {
-  display: inline;
-}
-.tooltip #year:before {
-  content: " (";
-}
-.tooltip #year:after {
-  content: ")";
 }

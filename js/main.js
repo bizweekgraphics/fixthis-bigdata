@@ -38,12 +38,9 @@ var svg = d3.select("#svg-canvas")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 // add the tooltip area to the webpage
-var tooltip = d3.select("body").append("div")
-    .attr("class", "tooltip")
-    .style("opacity", 0);
-
-var tooltipFields = ["name", "year", "description", "n", "dimension", "url"];
-var tooltipFieldsDOM = tooltipFields.map(function(d) { return tooltip.append("div").attr("id",d)});
+var tooltip = d3.select(".tooltip");
+var tooltipFields = ["name", "year", "description", "n", "dimension"];
+var tooltipFieldsDOM = tooltipFields.map(function(d) { return d3.select("#"+d); });
 
 // load data
 d3.csv("datadata.csv", function(error, data) {
@@ -109,14 +106,23 @@ d3.csv("datadata.csv", function(error, data) {
       .style("fill", function(d) { return d.featured ? "#f0f" : "#666";})
       .style("stroke", function(d) { return d.featured ? "none" : "none"})
       .on("mouseover", function(d) {
-          tooltip.style("opacity", 1)
-                 .style("left", (d3.event.pageX + 5) + "px")
-                 .style("top", (d3.event.pageY - 28) + "px");
-          tooltipFieldsDOM.map(function(dField) { dField.text(d[dField.attr("id")]); });
-          drawArrow(d3.select("#svg-canvas"), [width+margin.left+margin.right,0], [d3.event.pageX,d3.event.pageY], 90, false);
+          tooltip.style("opacity", 1);
+          /*       .style("left", (d3.event.pageX + 5) + "px")
+                 .style("top", (d3.event.pageY - 28) + "px");*/
+          tooltipFieldsDOM.map(function(dField) {
+              var value = d[dField.attr("id")];
+              var text = (value > 9999) ? bbwNumberFormat(value) : value;
+              dField.text(text);
+            });
+
+          //draw arrow between annotation and point
+          var rect = d3.select("#name").node().getBoundingClientRect();
+          if(typeof tooltipArrow !== "undefined") tooltipArrow.remove();
+          tooltipArrow = drawArrow(d3.select("#svg-canvas"), [rect.left-5, (rect.top+rect.bottom)/2], [d3.event.pageX,d3.event.pageY], 45, false);
       })
       .on("mouseout", function(d) {
-          tooltip.style("opacity", 0);
+          tooltip.style("opacity", 0.5);
+          tooltipArrow.style("opacity", 0.5);
       })
       .on("click", function(d) {
         window.open(d.url, '_blank');
