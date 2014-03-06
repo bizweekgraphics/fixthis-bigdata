@@ -139,21 +139,22 @@ console.log(data);
       .data(color.domain())
     .enter().append("g")
       .attr("class", "legend")
-      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+      .attr("transform", function(d, i) { return "translate(" + i * 160 + ",0)"; });
 
   // draw legend colored rectangles
   legend.append("rect")
-      .attr("x", width - 18)
+      .attr("x", 0)
+      .attr("y", height+40)
       .attr("width", 18)
       .attr("height", 18)
       .style("fill", color);
 
   // draw legend text
   legend.append("text")
-      .attr("x", width - 24)
-      .attr("y", 9)
-      .attr("dy", ".35em")
-      .style("text-anchor", "end")
+      .attr("x", 25)
+      .attr("y", height+40)
+      .attr("dy", "1em")
+      .style("text-anchor", "beginning")
       .text(function(d) { return d;})
 
 });
