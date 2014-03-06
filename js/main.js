@@ -43,7 +43,7 @@ var tooltipFields = ["name", "year", "description", "n", "dimension"];
 var tooltipFieldsDOM = tooltipFields.map(function(d) { return d3.select("#"+d); });
 
 // load data
-d3.csv("datadata.csv", function(error, data) {
+d3.csv("data/datadata.csv", function(error, data) {
 console.log(data);
   // change string (from CSV) into number format
   data.forEach(function(d) {
@@ -130,39 +130,46 @@ console.log(data);
           tooltipArrow.style("opacity", 0.5);
       })
       .on("click", function(d) {
-        window.open(d.url, '_blank');
+        if(d.url) window.open(d.url, '_blank');
       });
 
   // hand-drawn arrows
+  /*
   var categoryArrows = {
     "genomics" : drawArrow(svg, [20,230], [300,0], 90, true),
     "demographics" : drawArrow(svg, [690,350], [885,345], 90, true),
     "physics" : drawArrow(svg, [150,390], [520,320], 25, false)
   };
   $.each(categoryArrows, function(i,d) {d.style("stroke", color(i))})
+  */
 
   // draw legend
   var legend = svg.selectAll(".legend")
       .data(color.domain())
     .enter().append("g")
       .attr("class", "legend")
-      .attr("transform", function(d, i) { return "translate(" + i * 160 + ",0)"; });
+      .attr("transform", function(d, i) { return "translate(0," + (i * 20 - margin.top) + ")"; });
 
   // draw legend colored rectangles
   legend.append("rect")
-      .attr("x", 0)
-      .attr("y", height+40)
+      .attr("x", width - 250 + 20)
       .attr("width", 18)
       .attr("height", 18)
       .style("fill", color);
 
   // draw legend text
   legend.append("text")
-      .attr("x", 25)
-      .attr("y", height+40)
-      .attr("dy", "1em")
+      .attr("x", width - 250 + 20 + 22)
+      .attr("y", 9)
+      .attr("dy", ".35em")
       .style("text-anchor", "beginning")
-      .text(function(d) { return d;})
+      .text(function(d) { return d;});
+
+  svg.append("text")
+    .attr("x", -margin.left)
+    .attr("y", height+40)
+    .text("Click a point to view data.")
+    .style("font-style", "italic");
 
 });
 
