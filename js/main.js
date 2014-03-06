@@ -133,6 +133,13 @@ console.log(data);
         window.open(d.url, '_blank');
       });
 
+  // hand-drawn arrows
+  var categoryArrows = {
+    "genomics" : drawArrow(svg, [20,230], [300,0], 90, true),
+    "demographics" : drawArrow(svg, [690,350], [885,345], 90, true),
+    "physics" : drawArrow(svg, [150,390], [520,320], 25, false)
+  };
+  $.each(categoryArrows, function(i,d) {d.style("stroke", color(i))})
 
   // draw legend
   var legend = svg.selectAll(".legend")
