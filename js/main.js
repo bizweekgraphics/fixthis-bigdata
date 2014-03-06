@@ -12,23 +12,23 @@ var margin = {top: 50, right: 20, bottom: 60, left: 60},
  * axis - sets up axis
  */
 
-// setup x
+// set up x
 var xValue = function(d) { return d.n;}, // data -> value
     xScale = d3.scale.log().range([0, width]), // value -> display
     xMap = function(d) { return xScale(xValue(d));}, // data -> display
     xAxis = d3.svg.axis().scale(xScale).orient("bottom").tickFormat(bbwNumberFormatLog);
 
-// setup y
+// set up y
 var yValue = function(d) { return d.dimension;}, // data -> value
     yScale = d3.scale.log().range([height, 0]), // value -> display
     yMap = function(d) { return yScale(yValue(d));}, // data -> display
     yAxis = d3.svg.axis().scale(yScale).orient("left").tickFormat(bbwNumberFormatLog);
 
-// setup fill color
+// set up fill color
 var cValue = function(d) { return d.year;},
-    color = d3.scale.log()
-      .domain([1582,1980,2014])
-      .range(["#eee","#999","#111"]);
+    color = d3.scale.ordinal()
+      .domain(["genomics","physics","demographics"])
+      .range(["#f0f","#0ff","#0f0"]);
 
 // add the graph canvas to the body of the webpage
 var svg = d3.select("#svg-canvas")
@@ -44,7 +44,7 @@ var tooltipFieldsDOM = tooltipFields.map(function(d) { return d3.select("#"+d); 
 
 // load data
 d3.csv("datadata.csv", function(error, data) {
-
+console.log(data);
   // change string (from CSV) into number format
   data.forEach(function(d) {
     d.dimension = +d.dimension;
@@ -66,13 +66,14 @@ d3.csv("datadata.csv", function(error, data) {
   xLabelG.append("text")
       .attr("class", "label")
       .attr("x", width)
-      .attr("y", 24)
+      .attr("y", 40)
       .style("text-anchor", "end")
+      .style("font-weight", "bold")
       .text("Sample size");
   xLabelG.append("text")
       .attr("class", "label")
       .attr("x", width)
-      .attr("y", 24)
+      .attr("y", 55)
       .style("text-anchor", "end")
       .text("(one fact about however many things)")
 
@@ -86,6 +87,7 @@ d3.csv("datadata.csv", function(error, data) {
       .attr("y", -margin.top+1)
       .attr("dy", ".71em")
       .style("text-anchor", "beginning")
+      .style("font-weight", "bold")
       .text("Dimension");
   yLabelG.append("text")
       .attr("class", "label")
@@ -103,7 +105,7 @@ d3.csv("datadata.csv", function(error, data) {
       .attr("r", function(d) {return d.featured ? 7 : 2; })
       .attr("cx", xMap)
       .attr("cy", yMap)
-      .style("fill", function(d) { return d.featured ? "#f0f" : "#666";})
+      .style("fill", function(d) {return d.featured ? color(d.category) : "#666";})
       .style("stroke", function(d) { return d.featured ? "none" : "none"})
       .on("mouseover", function(d) {
           tooltip.style("opacity", 1);
@@ -112,6 +114,7 @@ d3.csv("datadata.csv", function(error, data) {
           tooltipFieldsDOM.map(function(dField) {
               var value = d[dField.attr("id")];
               var text = (value > 9999) ? bbwNumberFormat(value) : value;
+              if(text === "0" || text === 0) text = "";
               dField.text(text);
             });
 

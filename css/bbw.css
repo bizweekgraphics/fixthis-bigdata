@@ -189,6 +189,7 @@ path.arrow, polyline.arrow {
 /* FIX THIS BIG DATA */
 
 body {
+  font-size: 10pt;
 }
 
 .axis path,
@@ -219,4 +220,13 @@ body {
 
 .tooltip #name {
   font-family: BWHaasHead;
+}
+
+.tooltip #year {
+  font-style: italic;
+}
+
+.tooltip #description {
+  display: block;
+  margin-top: 10px;
 }
