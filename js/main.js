@@ -27,8 +27,8 @@ var yValue = function(d) { return d.dimension;}, // data -> value
 // set up fill color
 var cValue = function(d) { return d.year;},
     color = d3.scale.ordinal()
-      .domain(["genomics","physics","demographics"])
-      .range(["#f0f","#0ff","#0f0"]);
+      .domain(["genomics","physics","demographics","other"])
+      .range(["#f0f","#0ff","#0f0","#666"]);
 
 // add the graph canvas to the body of the webpage
 var svg = d3.select("#svg-canvas")
@@ -105,7 +105,9 @@ console.log(data);
       .attr("r", function(d) {return d.featured ? 7 : 2; })
       .attr("cx", xMap)
       .attr("cy", yMap)
-      .style("fill", function(d) {return d.featured ? color(d.category) : "#666";})
+      .style("fill", function(d) {
+          if(typeof d.category === "undefined") console.log(d);
+          return d.featured ? color(d.category) : "#666";})
       .style("stroke", function(d) { return d.featured ? "none" : "none"})
       .on("mouseover", function(d) {
           tooltip.style("opacity", 1);
@@ -131,7 +133,7 @@ console.log(data);
         window.open(d.url, '_blank');
       });
 
-/*
+
   // draw legend
   var legend = svg.selectAll(".legend")
       .data(color.domain())
@@ -153,7 +155,7 @@ console.log(data);
       .attr("dy", ".35em")
       .style("text-anchor", "end")
       .text(function(d) { return d;})
-*/
+
 });
 
 //////////////////////////////////////////////////////////////////////////////////////////
