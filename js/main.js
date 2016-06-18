@@ -130,6 +130,7 @@ console.log(data);
           tooltipArrow.style("opacity", 0.5);
       })
       .on("click", function(d) {
+        if(isTerminal) return;
         if(d.url) window.open(d.url, '_blank');
       });
 
