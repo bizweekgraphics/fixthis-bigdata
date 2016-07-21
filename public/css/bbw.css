@@ -219,7 +219,8 @@ body {
 }
 
 .tooltip #name {
-  font-family: BWHaasHead;
+  font-family: 'BWHaasHead', Helvetica, Arial, sans-serif;
+  font-weight: bold;
 }
 
 .tooltip #year {
